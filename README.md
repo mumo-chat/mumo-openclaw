@@ -94,4 +94,4 @@ Autonomous agents occasionally fabricate tool-call results — claiming a delibe
 
 ## License
 
-MIT
+MIT-0 (MIT No Attribution) — chosen to match ClawHub's published-skill license requirement. The other 5 mumo platform repos use standard MIT.

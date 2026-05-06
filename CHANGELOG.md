@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.1 — 2026-05-06
+
+License switched from standard MIT to MIT-0 (MIT No Attribution) to match ClawHub's published-skill license requirement. MIT-0 is strictly more permissive than MIT — drops the "must include copyright notice" clause; everything else identical. Doesn't affect runtime, install, or distribution. The other 5 mumo platform repos remain on standard MIT.
+
 ## 0.1.0 — 2026-05-06
 
 Initial release. OpenClaw skill + MCP config for mumo's multi-model deliberation server.
