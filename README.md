@@ -40,13 +40,21 @@ openclaw mcp show mumo
 
 ### 3. Install the skill
 
-OpenClaw auto-discovers skills from `~/.openclaw/skills/<name>/`. Clone this repo into that path:
+The fastest path is via ClawHub, OpenClaw's skill registry:
+
+```bash
+openclaw skills install mumo
+```
+
+That pulls [`mumo` from ClawHub](https://clawhub.ai/ericatmumo/mumo) and lands it at `~/.openclaw/skills/mumo/`.
+
+If you'd rather pull directly from the source repo (e.g., to track `main` ahead of registry releases), clone instead:
 
 ```bash
 git clone https://github.com/mumo-chat/mumo-openclaw ~/.openclaw/skills/mumo
 ```
 
-The skill ships the canonical `SKILL.md`, four cognitive-shape playbooks (contested decision, design review, uncertainty expansion, red team), and reference docs for claim-map reading, snippet doctrine, model selection, and synthesis.
+Either way, the skill ships the canonical `SKILL.md`, four cognitive-shape playbooks (contested decision, design review, uncertainty expansion, red team), and reference docs for claim-map reading, snippet doctrine, model selection, and synthesis.
 
 ### 4. Restart OpenClaw
 
@@ -89,7 +97,8 @@ Autonomous agents occasionally fabricate tool-call results — claiming a delibe
 - MCP reference — https://mumo.chat/docs/mcp
 - REST API — https://mumo.chat/docs/api
 - OpenClaw — https://docs.openclaw.ai
-- ClawHub (skill registry) — https://github.com/openclaw/clawhub
+- ClawHub listing — https://clawhub.ai/ericatmumo/mumo
+- ClawHub (skill registry source) — https://github.com/openclaw/clawhub
 - Issues — https://github.com/mumo-chat/mumo-openclaw/issues
 
 ## License
