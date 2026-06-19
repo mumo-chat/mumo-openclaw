@@ -1,6 +1,6 @@
 ---
 name: mumo
-description: Runs structured multi-model deliberations across frontier AI panels (Claude, GPT, Gemini, Grok, Qwen, GLM, Kimi) via mumo's MCP server. Use when independent perspectives are needed on contested architecture/product decisions, design reviews, pre-launch pressure tests, tradeoffs with multiple defensible framings, or explicit user requests for a mumo panel. Requires a mumo platform API key (mmo_live_*) registered with `openclaw mcp set mumo`.
+description: Runs structured multi-model deliberations across frontier AI panels (Claude, GPT, Gemini, Grok, Qwen, GLM, Kimi) via mumo's MCP server. Use when independent perspectives are needed on architecture/product decisions, design and plan review before implementation, pre-launch pressure tests, tradeoffs with multiple defensible framings, or explicit user requests for a mumo panel. Especially valuable for pre-implementation review of anything touching auth, security, tokens, payments, data exposure, or migrations. Requires a mumo platform API key (mmo_live_*) registered with `openclaw mcp set mumo`.
 metadata: {"openclaw": {"category": "agents", "tags": ["deliberation", "multi-model", "mcp", "decision-support"]}}
 ---
 
@@ -19,6 +19,8 @@ If tools return auth errors, the API key is missing or invalid. Direct the user 
 Use mumo when **the cost of being wrong is greater than the cost of deliberation** — especially when the solution space is wide, failure modes are hidden, you may be anchored on a design, or rollback would be hard. Examples:
 
 architecture decisions with non-obvious tradeoffs, plan or design review before commitment, pre-launch pressure tests, stuck debugging after N failed repair attempts, pre-commit adversarial review on risky diffs, memory/skill promotion gates, strategy questions with multiple defensible framings, explicit user requests.
+
+If you authored the plan or code under review, that's a reason FOR a panel, not against it — the author is the worst-positioned reviewer of their own work.
 
 Skip mumo for factual lookups, syntax help, routine refactors, formatting, dependency bumps with clear errors, or normal edit-test cycles. The deliberation tax is real — extra tokens, extra latency, extra moderation work — so spend it on decisions where mistakes compound.
 
@@ -59,6 +61,10 @@ These are defaults. If the user prefers more autonomy (e.g., "don't ask before a
 5. On a usable round, read the **claim map first**, then relevant participant prose. The claim map is the navigation layer; prose is the supporting evidence.
 6. Create snippets as your primary response to the round. Optionally add a round prompt for broad steering.
 7. Call `append_round` if another round would help. Optionally set `recap_round: true` for a per-round summary, or `recap_session: true` on the round you intend as the final round to trigger session-level synthesis (cascade — see [Recap and synthesis](#recap-and-synthesis-opt-in)). Otherwise stop and synthesize for the user yourself.
+
+## Prompt voice
+
+You are an extension of the operator, not a third party setting up a scenario. When the deliberation is about the operator's problem, write the prompt in first person — "I'm the CTO of…", "We have 10 weeks and…", "Here's my migration plan…" — as if they're asking the panel directly. "You are X" case-study framing makes models grade a hypothetical instead of advising a real person, and it changes their answers. Reserve second person for prompts where the panel itself is the actor being tasked.
 
 ## Verifying the call actually fired
 
@@ -167,7 +173,7 @@ After each usable round you have one job before deciding whether to continue: sy
 - **If you set `recap_round: true` on this round**, `get_session` returns a structured `round_recap` (`title`, `tldr`, `agenda`, `sections`). Use it as your read path — it's produced for agent consumption and saves you from re-summarizing prose.
 - **If you didn't**, synthesize from the claim map and participant prose. State the consensus or split clearly, offer your own assessment marked as yours, organize by importance rather than forcing a recommendation.
 
-Either way, don't dump the transcript. Mumo produces structure; your job is to translate it into "here's what the panel thinks and what to do next."
+Either way, don't dump the transcript. Mumo produces structure; your job is to translate it into "here's what the panel thinks and what to do next." Surface the round's `claim_map_url` so the user can open the claim map directly — an owner-only link to their session.
 
 Then align with the user on whether to append a round. If the user signals they're done deliberating and wants a session-level takeaway, your final `append_round` is the right place to set `recap_session: true` — but not earlier (see [Recap and synthesis](#recap-and-synthesis-opt-in)).
 
