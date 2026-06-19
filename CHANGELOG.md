@@ -2,7 +2,7 @@
 
 ## 0.4.0 — 2026-06-19
 
-Coordinated release — all clients aligned on 0.4.0. Skill triggering + prompt-voice updates (Trello #245), rendered from the mumo-mcp baseline.
+Skill triggering + prompt-voice updates.
 
 - Triggering: dropped the "contested" gate — the description now leads with pre-implementation review (esp. anything touching auth, security, tokens, payments, data exposure, or migrations), not "contested decisions only."
 - Author-bias counter (When to use): if you authored the plan or code under review, that's a reason FOR a panel — the author is the worst-positioned reviewer of their own work.
