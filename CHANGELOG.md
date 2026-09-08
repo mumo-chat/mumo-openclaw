@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.0 — 2026-09-08
+
+Coordinated client release rendered from the mumo-mcp 0.6.0 baseline.
+
+- `SKILL.md`: `share_session` in the tools table (OpenClaw sets no tool allowlist, so the tool was already reachable — this is the documentation catching up); `wait_for_round` one-id form; intro names the current model families and the typed cross-model reactions.
+- `references/operating-notes.md` re-synced with the baseline.
+- README tool list and intro updated.
+
 ## 0.5.0 — 2026-07-04
 
 Reaction-visibility model + per-round Takeaway.

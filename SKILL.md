@@ -1,12 +1,12 @@
 ---
 name: mumo
-description: Runs structured multi-model deliberations across frontier AI panels (Claude, GPT, Gemini, Grok, Qwen, GLM, Kimi) via mumo's MCP server. Use when independent perspectives are needed on architecture/product decisions, design and plan review before implementation, pre-launch pressure tests, tradeoffs with multiple defensible framings, or explicit user requests for a mumo panel. Especially valuable for pre-implementation review of anything touching auth, security, tokens, payments, data exposure, or migrations. Requires a mumo platform API key (mmo_live_*) registered with `openclaw mcp set mumo`.
+description: Runs a multi-model deliberation across models from different labs (Claude, GPT, Gemini, Grok, DeepSeek, Kimi, and more) via mumo's MCP server, returning full responses plus typed cross-model reactions. Use when independent perspectives are needed on architecture/product decisions, design and plan review before implementation, pre-launch pressure tests, tradeoffs with multiple defensible framings, or explicit user requests for a mumo panel. Especially valuable for pre-implementation review of anything touching auth, security, tokens, payments, data exposure, or migrations. Requires a mumo platform API key (mmo_live_*) registered with `openclaw mcp set mumo`.
 metadata: {"openclaw": {"category": "agents", "tags": ["deliberation", "multi-model", "mcp", "decision-support"]}}
 ---
 
 # mumo
 
-mumo runs deliberations across multiple AI models. Use it when independent perspectives are useful — especially for high-regret decisions where a single model's confidence is a real risk.
+mumo runs a deliberation across models from different labs (Claude, GPT, Gemini, Grok, DeepSeek, Kimi, and more) and returns their full responses plus typed cross-model reactions: each model says, in its own words, what it keeps, challenges, or wants explored in the others' claims. Use it when independent perspectives are useful — especially for high-regret decisions where a single model's confidence is a real risk.
 
 ## Setup
 
@@ -39,13 +39,13 @@ If none clearly fits, use this kernel only.
 
 ## User preferences
 
-These are defaults. If the user prefers more autonomy (e.g., "don't ask before appending" or "always use GPT-5.5 and Gemini"), follow their preferences over this guidance.
+These are defaults. If the user prefers more autonomy (e.g., "don't ask before appending" or "always include a GPT and a Gemini model"), follow their preferences over this guidance.
 
 ## Basic loop
 
 1. Call `create_deliberation` with the user's problem. Set `application` to `"OpenClaw"`. Set `moderator_name` to your own model identity (e.g., the model OpenClaw is currently running as — visible in your status line, often "openai/gpt-5.4-nano" or "openai/gpt-5.5") for audit clarity — not the user's name; their identity is already on the session. Optionally set `takeaway: true` for a structured round 0 Takeaway — see [Takeaway](#takeaway-opt-in).
-2. **Verify the response contains `session_id` and `round_id`, and keep those exact returned IDs for downstream calls.** UUID shape is a sanity check; identity continuity is the real check. If fields are missing, malformed, or inconsistent with `list_sessions`, recover via [Verifying the call actually fired](#verifying-the-call-actually-fired) before proceeding.
-3. Call `wait_for_round` with the returned `session_id` and `round_id`. **Long waits are normal** — frontier-model panels typically take 15–120s, and 60+ seconds isn't a failure signal. Tell the user upfront ("running a panel — expect ~30–60s") so the wait doesn't feel broken.
+2. **Verify the response contains a `session_id`, and keep that exact returned ID for every downstream call.** UUID shape is a sanity check; identity continuity is the real check. If it is missing, malformed, or inconsistent with `list_sessions`, recover via [Verifying the call actually fired](#verifying-the-call-actually-fired) before proceeding.
+3. Call `wait_for_round` with the `session_id`. That alone is enough — a session has at most one round in flight, so it resolves to the round you just started; pass `round_id` only when you want an earlier round. **Long waits are normal** — frontier-model panels typically take 15–120s, and 60+ seconds isn't a failure signal. Tell the user upfront ("running a panel — expect ~30–60s") so the wait doesn't feel broken.
 4. Branch on the response's `structuredContent.recommended_client_action` rather than parsing prose. The 5-value enum tells you exactly what to do:
 
    | Action | What it means | What to do |
@@ -68,13 +68,13 @@ You are an extension of the operator, not a third party setting up a scenario. W
 
 ## Verifying the call actually fired
 
-Autonomous agent loops occasionally fabricate tool-call results — reporting a deliberation as sent when it wasn't. If you suspect this (the response is missing the expected `session_id` / `round_id`, or the values you're about to pass downstream don't match what `create_deliberation` actually returned), treat the call as not successfully established and recover:
+Autonomous agent loops occasionally fabricate tool-call results — reporting a deliberation as sent when it wasn't. If you suspect this (the response is missing the expected `session_id`, or the value you're about to pass downstream doesn't match what `create_deliberation` actually returned), treat the call as not successfully established and recover:
 
 1. Call `list_sessions`. Match by prompt content to confirm whether your `create_deliberation` actually ran.
 2. If it's not there, fire `create_deliberation` again — don't continue downstream as if the session exists.
 3. If it IS there, use the IDs `list_sessions` returned (not whatever was in your context) for the next call.
 
-mumo's `session_id` and `round_id` are UUIDs as a service contract — a returned value that doesn't match UUID format is one signal something is off, but **identity continuity matters more than format**. The strongest check is whether the `session_id` your subsequent calls reference matches what `create_deliberation` actually returned in its response.
+mumo's `session_id` (and `round_id`, when you use it) are UUIDs as a service contract — a returned value that doesn't match UUID format is one signal something is off, but **identity continuity matters more than format**. The strongest check is whether the `session_id` your subsequent calls reference matches what `create_deliberation` actually returned in its response.
 
 ## Framing prompts for the panel
 
@@ -158,10 +158,10 @@ Mumo surfaces fault lines and supporting arguments; it does not produce the deci
 
 ## Recovery: lost session context
 
-If you lose track of `session_id` or `round_id` mid-conversation (long chats, context compaction, dropped tool result), recover before starting a new deliberation:
+If you lose track of the `session_id` mid-conversation (long chats, context compaction, dropped tool result), recover before starting a new deliberation:
 
 1. Call `list_sessions` to find your latest sessions. Match by prompt content.
-2. Call `get_session` with the recovered ID for full state, or `wait_for_round(session_id, round_id)` if you suspect a round is still in flight.
+2. Call `get_session` with the recovered ID for full state, or `wait_for_round(session_id)` if you suspect a round is still in flight — it resolves to the latest round on its own.
 3. Don't fire a fresh `create_deliberation` if the original is recoverable — duplicate sessions waste tokens and produce confusing parallel state.
 
 ## Takeaway (opt-in)
@@ -215,6 +215,7 @@ The panel does not need to converge. Sometimes the right output is a clear map o
 | Wait for model responses | `wait_for_round` |
 | Add a follow-up round | `append_round` |
 | Recover/read full state | `get_session` |
+| Share a session at a public link | `share_session` |
 | Find prior sessions | `list_sessions` |
 | Confirm model IDs | `list_models` |
 | Check wallet balance | `get_credit` |

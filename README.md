@@ -1,6 +1,6 @@
 # mumo — OpenClaw skill
 
-**Multi-model deliberation panel for OpenClaw.** When OpenClaw is about to make an architecture choice, design tradeoff, or security-sensitive change you want a second opinion on, mumo runs a panel of frontier models in parallel — Claude, GPT, Gemini, Grok, Qwen, Kimi, GLM — and returns a cross-model claim map showing where they agree and where they split.
+**Multi-model deliberation panel for OpenClaw.** When OpenClaw is about to make an architecture choice, design tradeoff, or security-sensitive change — a question worth checking across labs — mumo runs a panel of frontier models in parallel (Claude, GPT, Gemini, Grok, DeepSeek, Kimi, and more) and returns each model's full response plus typed cross-model reactions — what each model keeps, challenges, or wants explored in the others' claims.
 
 ## What's in the box
 
@@ -56,7 +56,7 @@ Either way, the skill ships the canonical `SKILL.md`, four cognitive-shape playb
 
 ### 4. Restart OpenClaw
 
-Fully exit and restart OpenClaw so it picks up both the new MCP server registration and the new skill. After restart, the seven mumo tools become available to the agent as `mumo__create_deliberation`, `mumo__wait_for_round`, `mumo__append_round`, `mumo__get_session`, `mumo__list_sessions`, `mumo__list_models`, `mumo__get_credit`.
+Fully exit and restart OpenClaw so it picks up both the new MCP server registration and the new skill. After restart, the eight mumo tools become available to the agent as `mumo__create_deliberation`, `mumo__wait_for_round`, `mumo__append_round`, `mumo__get_session`, `mumo__list_sessions`, `mumo__list_models`, `mumo__share_session`, `mumo__get_credit`.
 
 The `coding` and `messaging` tool profiles expose configured MCP servers by default. If you're on the `minimal` profile, MCP tools are hidden — switch to `coding` or add an explicit override.
 
