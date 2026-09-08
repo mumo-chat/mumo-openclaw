@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.1 — 2026-09-08
+
+Registry-only release: the ClawHub display name is `mumo` again (the 0.6.0 publish omitted `--name`, and the CLI derived "Mumo Openclaw" from the folder). No skill content changes.
+
 ## 0.6.0 — 2026-09-08
 
 Coordinated client release rendered from the mumo-mcp 0.6.0 baseline.
