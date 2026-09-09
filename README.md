@@ -17,19 +17,33 @@ Sign up at [mumo.chat](https://mumo.chat) and create a platform key at [Settings
 
 ### 2. Register the mumo MCP server
 
-OpenClaw stores outbound MCP servers in `~/.openclaw/openclaw.json` under `mcp.servers.<name>`. Use the CLI to register mumo with your real key:
+OpenClaw stores outbound MCP servers in `~/.openclaw/openclaw.json` under `mcp.servers.<name>`. Put your key in `~/.openclaw/.env` first, so it never lands in the config file. Create that file and restrict it *before* putting anything in it, so the key is never written into a world-readable file:
+
+```bash
+touch ~/.openclaw/.env && chmod 600 ~/.openclaw/.env
+```
+
+Then open `~/.openclaw/.env` in your editor and add a line:
+
+```
+MUMO_API_KEY=mmo_live_your_key_here
+```
+
+Edit the file rather than appending from the shell: a command containing the literal key is recorded in your shell history, and running it twice silently stacks a duplicate entry.
+
+Now register mumo, referencing the variable rather than the key:
 
 ```bash
 openclaw mcp set mumo '{
   "url": "https://mumo.chat/api/mcp",
   "transport": "streamable-http",
   "headers": {
-    "Authorization": "Bearer mmo_live_YOUR_KEY_HERE"
+    "Authorization": "Bearer ${MUMO_API_KEY}"
   }
 }'
 ```
 
-The same JSON shape ships in this repo at `config/mumo.example.json` for reference. Verify it landed:
+OpenClaw resolves `${MUMO_API_KEY}` when it connects, and warns at startup if the variable is missing — so a rotated or unset key surfaces as a named config warning instead of a silent 401. The same JSON shape ships in this repo at `config/mumo.example.json` for reference. Verify it landed:
 
 ```bash
 openclaw mcp list
@@ -44,7 +58,7 @@ The fastest path is via ClawHub, OpenClaw's skill registry:
 openclaw skills install mumo
 ```
 
-That pulls [`mumo` from ClawHub](https://clawhub.ai/ericatmumo/mumo) and lands it at `~/.openclaw/skills/mumo/`.
+That pulls [`mumo` from ClawHub](https://clawhub.ai/ericatmumo/mumo) into the **active workspace's** `skills/` directory — the one inferred from your current directory, or your default agent. Use `--agent <id>` to target a different agent workspace. If you want mumo at a fixed location instead, use the clone path below.
 
 If you'd rather pull directly from the source repo (e.g., to track `main` ahead of registry releases), clone instead:
 
@@ -60,7 +74,15 @@ Fully exit and restart OpenClaw so it picks up both the new MCP server registrat
 
 The `coding` and `messaging` tool profiles expose configured MCP servers by default. If you're on the `minimal` profile, MCP tools are hidden — switch to `coding` or add an explicit override.
 
-### 5. Run your first deliberation
+### 5. Confirm the connection
+
+`openclaw mcp list` and `openclaw mcp show mumo` only report what is saved in your config — neither opens a connection, so neither proves the key resolved. Ask the agent to make one real call instead:
+
+> Use mumo to list the available models.
+
+That runs `mumo__list_models`, which authenticates against the server and costs nothing — no deliberation is started. A model catalog back means the key resolved and the server accepted it. An auth error means `MUMO_API_KEY` is unset or wrong; OpenClaw also names a missing variable in its startup config warnings.
+
+### 6. Run your first deliberation
 
 Name `mumo` explicitly the first time so OpenClaw routes through the panel. The skill will guide the agent through the create→wait→read→snippet loop and teach it to verify the session actually fired.
 

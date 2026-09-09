@@ -10,9 +10,9 @@ mumo runs a deliberation across models from different labs (Claude, GPT, Gemini,
 
 ## Setup
 
-The mumo MCP server is registered via `openclaw mcp set mumo '<json>'` and stored in `~/.openclaw/openclaw.json` under `mcp.servers.mumo`. See `config/mumo.example.json` in this skill's directory for the canonical config payload (reference only — OpenClaw doesn't auto-load this file; it's the JSON shape to paste into the CLI command).
+The mumo MCP server is registered via `openclaw mcp set mumo '<json>'` and stored in `~/.openclaw/openclaw.json` under `mcp.servers.mumo`. The registered block references `${MUMO_API_KEY}`, which OpenClaw resolves from the environment or `~/.openclaw/.env`. See `config/mumo.example.json` in this skill's directory for the canonical config payload (reference only — OpenClaw doesn't auto-load this file; it's the JSON shape to paste into the CLI command).
 
-If tools return auth errors, the API key is missing or invalid. Direct the user to https://mumo.chat/settings/api-keys to create one (keys start with `mmo_live_`), then re-run `openclaw mcp set mumo` with the new value and restart OpenClaw.
+If tools return auth errors, the API key is missing or invalid. Check that `MUMO_API_KEY` is set in `~/.openclaw/.env` — when it is not, OpenClaw emits a startup configuration warning naming the missing variable at `mcp.servers.mumo.headers.Authorization`. Direct the user to https://mumo.chat/settings/api-keys to create one (keys start with `mmo_live_`). Rotating the key means updating `.env` and restarting OpenClaw; the registered server config itself does not change.
 
 ## When to use
 

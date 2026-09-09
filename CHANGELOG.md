@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.2 — 2026-09-09
+
+Credential-hygiene guidance. The registration payload now references `${MUMO_API_KEY}` in the `Authorization` header instead of carrying a `mmo_live_YOUR_KEY_HERE` placeholder for the user to overwrite, and the key belongs in `~/.openclaw/.env`. OpenClaw resolves the reference at connect time and names a missing variable in a startup config warning, so a rotated or unset key surfaces as a named warning rather than a silent 401. Rotation no longer means re-registering the server.
+
+Also corrects the skill install location: `openclaw skills install mumo` installs into the active workspace's `skills/` directory (`--agent <id>` targets another), not `~/.openclaw/skills/mumo/`. The git-clone path is what puts it at a fixed location.
+
+The `.env` step creates and `chmod 600`s the file before the key goes in, and tells you to edit it rather than append from the shell — a command carrying the literal key lands in shell history, and a second run stacks a duplicate entry. New step 5 verifies the connection with a real, free `mumo__list_models` call through the agent before the first deliberation — `openclaw mcp list` and `mcp show` only report saved config and never open a connection.
+
 ## 0.6.1 — 2026-09-08
 
 Registry-only release: the ClawHub display name is `mumo` again (the 0.6.0 publish omitted `--name`, and the CLI derived "Mumo Openclaw" from the folder). No skill content changes.
