@@ -62,6 +62,14 @@ These are defaults. If the user prefers more autonomy (e.g., "don't ask before a
 6. Create snippets as your primary response to the round. Optionally add a round prompt for broad steering.
 7. Call `append_round` if another round would help. Optionally set `takeaway: true` for a per-round Takeaway (see [Takeaway](#takeaway-opt-in)). Otherwise stop and synthesize for the user yourself.
 
+## One model instead of a panel
+
+`ask_a_model` puts a question to ONE model you name (`model` is required; call `list_models` for IDs). Use it when a single outside opinion is enough: a quick second read from another lab's model, or a question for one specific model. It returns the same ack as `create_deliberation`. Read the answer with `wait_for_round`, and continue the conversation with `append_round`.
+
+It is not a deliberation. With no other models there are no cross-model reactions, no claim map and no Takeaway, so skip the claim-map steps and read the answer directly. Reach for `create_deliberation` whenever disagreement between models is the point.
+
+A session's models are fixed when it is created. To put an `ask_a_model` exchange in front of a panel, call `create_deliberation` and pass the exchange in `reference`. For a second opinion from a different model, call `ask_a_model` again with that model.
+
 ## Prompt voice
 
 You are an extension of the operator, not a third party setting up a scenario. When the deliberation is about the operator's problem, write the prompt in first person — "I'm the CTO of…", "We have 10 weeks and…", "Here's my migration plan…" — as if they're asking the panel directly. "You are X" case-study framing makes models grade a hypothetical instead of advising a real person, and it changes their answers. Reserve second person for prompts where the panel itself is the actor being tasked.
@@ -181,7 +189,7 @@ After each usable round you have one job before deciding whether to continue: sy
 - **If you set `takeaway: true` on this round**, `get_session` returns a structured `round_takeaway` (`bottom_line` + `items[]` of question / answer / consensus, with claim references). Use it as your read path — it's produced for agent consumption and saves you from re-summarizing prose.
 - **If you didn't**, synthesize from the claim map and participant prose. State the consensus or split clearly, offer your own assessment marked as yours, organize by importance rather than forcing a recommendation.
 
-Either way, don't dump the transcript. Mumo produces structure; your job is to translate it into "here's what the panel thinks and what to do next." Surface the round's `claim_map_url` so the user can open the claim map directly — an owner-only link to their session.
+Either way, don't dump the transcript. Mumo produces structure; your job is to translate it into "here's what the panel thinks and what to do next." Surface the round's `web_url` so the user can open the round in mumo directly, on its reactions when the round has them — an owner-only link to their session.
 
 Then align with the user on whether to append a round.
 
@@ -211,7 +219,8 @@ The panel does not need to converge. Sometimes the right output is a clear map o
 
 | Need | Tool |
 |---|---|
-| Start a session | `create_deliberation` |
+| Start a panel of 2–3 models | `create_deliberation` |
+| Ask one model | `ask_a_model` |
 | Wait for model responses | `wait_for_round` |
 | Add a follow-up round | `append_round` |
 | Recover/read full state | `get_session` |

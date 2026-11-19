@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.0 — 2026-11-19
+
+Coordinated client release rendered from the mumo-mcp 0.7.0 baseline.
+
+- New tool: `ask_a_model` puts a question to one model of your choice and returns one answer, with no cross-model reactions or claim map. `SKILL.md` has a new section on when to use it and when to use `create_deliberation` instead. OpenClaw sets no tool allowlist, so the tool is available as soon as the server lists it.
+- `SKILL.md` now tells the agent to surface each round's `web_url`. `claim_map_url` still works and carries the same value.
+- README tool list updated.
+
 ## 0.6.2 — 2026-09-09
 
 Credential-hygiene guidance. The registration payload now references `${MUMO_API_KEY}` in the `Authorization` header instead of carrying a `mmo_live_YOUR_KEY_HERE` placeholder for the user to overwrite, and the key belongs in `~/.openclaw/.env`. OpenClaw resolves the reference at connect time and names a missing variable in a startup config warning, so a rotated or unset key surfaces as a named warning rather than a silent 401. Rotation no longer means re-registering the server.
