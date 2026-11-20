@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.8.0 — 2026-11-20
+
+Coordinated client release rendered from the mumo-mcp 0.8.0 baseline.
+
+- The skill says "reactions" where it said "claim map", and calls the moderator's quote-plus-type items "your reactions". The `append_round` parameter is still `snippets`, and the `claim_map` field keeps its name.
+- Reading the reactions: the read tools print reacted-to claims in four groups. Contested (a model challenged it), Open (a model wants it explored), Pivotal (a model called it central, or it changed a model's frame) and Kept (a model kept it). Agreement between models is not verification.
+- The loop: summarize each round for the user and agree before running another. `append_round` needs a `prompt`. Wait with both the `session_id` and the `round_id`, and reuse the returned `round_id` after a timeout. An identical `append_round` call within 24 hours returns the first acknowledgement, so reword the prompt to retry a failed round.
+- A family name (`"claude"`, `"gpt"`, `"gemini"`) works as a model. `list_models` is sorted by what your plan can run.
+- Request a Takeaway only when the user asks for one.
+- `detail: "compact"` on `wait_for_round` and `get_session` shortens long sessions.
+- Reference files renamed: `references/claim-maps.md` is now `references/reading-reactions.md`, and `references/snippets.md` is now `references/writing-reactions.md`. The Confidence scores section is removed, because the tools do not print those fields.
+- README updated to match.
+
 ## 0.7.0 — 2026-11-19
 
 Coordinated client release rendered from the mumo-mcp 0.7.0 baseline.

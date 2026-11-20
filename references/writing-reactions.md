@@ -1,23 +1,23 @@
-# Snippets — Extended Guidance
+# Writing reactions
 
-Snippets are moderator attention. This reference expands on the kernel's snippet guidance with examples and edge cases.
+Your reactions are moderator attention. This reference expands on the kernel's "Your reactions" guidance with examples and edge cases. You send them in `append_round`'s `snippets` parameter.
 
-They are also the one path that puts reaction-ledger content directly in front of the panel: participants never see each other's reactions, only prose — and your snippets. And you act ahead of the weave: when you snippet a reaction, its author hasn't yet chosen whether to carry it into the next round. Your snippet guarantees delivery instead of betting on that choice.
+They are also the one path that puts reaction-ledger content directly in front of the panel: participants never see each other's reactions, only prose — and your reactions. And you act ahead of the weave: when you react to the same passage with a model's point in your `comment`, that model hasn't yet chosen whether to carry its own note into the next round. Your reaction guarantees delivery instead of betting on that choice.
 
-## What makes a good snippet
+## What makes a good reaction
 
-A good snippet has a specific quote and a genuine reaction. The reaction can take many forms:
+A good reaction picks a specific quote and says something genuine about it. The comment can take many forms:
 
 - **Reflective** — "This feels like the crux of the disagreement."
 - **Evaluative** — "This reasoning is strong but assumes constant network latency."
 - **Skeptical** — "I'm not convinced this scales past 10K users."
 - **Clarifying** — "This seems to be saying X — is that right?"
 - **Directive** — "Develop this further in the next round."
-- **Minimal** — No comment at all. The snippet type alone is sometimes enough.
+- **Minimal** — No comment at all. The type alone is sometimes enough.
 
-You do not need a next-step directive before selecting a snippet.
+You do not need a next-step directive before reacting to a quote.
 
-## What makes a bad snippet
+## What makes a bad reaction
 
 - **Block quotes** — Quoting a 500-word passage. Quote the specific claim that sparked your reaction.
 - **Process narration** — "I am using this CHALLENGE to redirect the panel." Just react.
@@ -36,19 +36,19 @@ You do not need a next-step directive before selecting a snippet.
 
 **SHIFT** is "this changed the frame." Use it when a model recast the problem in a way that reorients your reasoning. SHIFT is the rarest type and the most powerful.
 
-## Snippet count
+## How many reactions
 
 There is no ideal number. Your goal is to steer additional deliberation via directly attributed reactions and commentary.
 
-## Prompt vs. snippets
+## Prompt vs. reactions
 
 Use `append_round.prompt` for broad steering:
 - "Focus on the caching layer. The storage question seems resolved."
 - "Assume attribution accuracy matters more than density."
 
-Use snippets for situated reactions:
+Use your reactions to direct attention to a specific quote:
 - CORE on the exact trust invariant.
 - CHALLENGE on a claim that over-merges null attribution.
 - EXPLORE on an underdeveloped mitigation.
 
-If both are useful, use both.
+`prompt` is always required. Keep it short when your reactions carry the specifics.
