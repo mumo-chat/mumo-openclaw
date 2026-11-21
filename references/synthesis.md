@@ -45,4 +45,4 @@ Do not present your synthesis as the panel's raw output. The user should know wh
 - Per-model quality commentary ("GPT had the best answer").
 - Hedging that adds no information ("Of course, this is just one perspective...").
 
-Surface the round's `web_url` when the user might want to review raw responses or the reactions directly; it is private to their account. Offer `share_session` only when they want a link for someone else, because it publishes a page anyone with the link can read.
+Surface the round's `Web URL` when the user might want to review raw responses or the reactions directly; it is private to their account. Offer `share_session` only when they want a link for someone else, because it publishes a page anyone with the link can read.

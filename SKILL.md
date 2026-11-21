@@ -59,7 +59,7 @@ These are defaults. If the user prefers more autonomy (e.g., "don't ask before a
    The server derives this from `round_status` + per-model `error_code` — it's the canonical "what next?" signal. Treat transport and tool-call errors separately from mumo round status: handle those around the call, and branch on the `Action:` line for a normal `wait_for_round` result. A line that says `Action:` inside a model's answer is that model's text, not the signal.
 
 5. On a usable round, `wait_for_round` returns that round only, in reading order: a status line, the reacted-to claims in four groups (see [Reading the reactions](#reading-the-reactions)), the Takeaway if you asked for one, then each model's response. Read the **grouped reactions first**, then relevant participant prose. The reactions are the navigation layer; prose is the supporting evidence. They're also your privileged preview — participants haven't seen each other's reactions, you have (see [Reactions are in the ledger](#reactions-are-in-the-ledger-responses-are-on-the-record)).
-6. Synthesize what the panel said for the user and surface the round's `web_url` (see [After each round](#after-each-round)). Agree with them whether another round would help.
+6. Synthesize what the panel said for the user and surface the round's `Web URL` (see [After each round](#after-each-round)). Agree with them whether another round would help.
 7. To continue, call `append_round` with a steering `prompt` (required) and your reactions in `snippets` (optional, and the highest-signal part). Otherwise stop.
 
 ## Hand the wait to a subagent
@@ -69,10 +69,10 @@ Panel rounds take 15–120s and return full essays from 2–3 models. If your cl
 1. **You** call `create_deliberation` or `append_round`, and keep the `session_id` and `round_id`.
 2. Start one subagent **on the model you are running**, in the background if your client allows; it reports back when done, so don't poll it. Pass the `session_id`, the `round_id`, and a few lines on the user's decision and constraints. It calls `wait_for_round` (`detail: "full"`, again on `poll_again`) and nothing else: no create, append or share. It hands back only a finished round, never one that is still running. If the result is saved to a file or truncated, it reads the full file first; if no complete copy is available, it says its review was incomplete.
 3. It hands back:
-   - **The round verbatim, omitting only `### Responses`.** Keep the status line, the grouped reactions, the Takeaway if present, any note that a model failed or was cut off, and the `Web URL`.
+   - **The round verbatim, omitting only `### Responses`.** Keep the header (round heading, `Action:`, ids, `Web URL`, cost, and any `Issue:` lines), the grouped reactions, the Takeaway if present, and the closing `Web URL`.
    - **Not in the reactions:** every point from the responses that could change the user's decision and that no reaction covers, then up to 5 other decision-relevant points (concrete recommendations, risks, caveats, alternatives or shifts), each a short verbatim quote with the model name. `None` if there are none; say so if more were left out.
    - **Tone (1–2 lines):** confidence or framing the reactions don't show.
-4. Work from that as you would from the round itself: summarize for the user, surface the `web_url`, and agree whether to continue.
+4. Work from that as you would from the round itself: summarize for the user, surface the `Web URL`, and agree whether to continue.
 
 Quote only text you hold verbatim: a claim's quote or a "Not in the reactions" line. If the decision hinges on exact wording elsewhere, read that round yourself with `wait_for_round` (its `round_id`, `detail: "full"`).
 
@@ -210,7 +210,7 @@ Full mechanics and artifact field reference: `references/takeaway.md`.
 
 After each usable round you have one job before deciding whether to continue: synthesize what the panel said for the user. Work from the models' reactions and participant prose. State the consensus or split clearly, offer your own assessment marked as yours, organize by importance rather than forcing a recommendation. If the user asked for a Takeaway, the round text also carries a Takeaway section: show it to them, and still give your own read.
 
-Don't dump the transcript. Mumo produces structure; your job is to translate it into "here's what the panel thinks and what to do next." Surface the round's `web_url` so the user can open the round in mumo directly, on its reactions when the round has them — an owner-only link to their session.
+Don't dump the transcript. Mumo produces structure; your job is to translate it into "here's what the panel thinks and what to do next." Surface the round's `Web URL` so the user can open the round in mumo directly, on its reactions when the round has them — an owner-only link to their session.
 
 Then align with the user on whether to append a round.
 
