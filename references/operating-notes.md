@@ -16,7 +16,7 @@ Use `get_session` for full state. Prefer `wait_for_round` while a round is in fl
 
 MCP write tools are idempotent by arguments for 24 hours. After a transport failure (a dropped connection, an unknown delivery), repeat the call with exactly the same arguments: it returns the original acknowledgement and creates no duplicate. Don't edit the prompt in that case, or you start a second operation.
 
-A round that actually failed is the opposite case. When `recommended_client_action` is `retry` and the failed round came from `append_round`, reword the prompt, because an identical call returns the first acknowledgement and starts nothing.
+A round that actually failed is the opposite case. When the `Action:` line says `retry` and the failed round came from `append_round`, reword the prompt, because an identical call returns the first acknowledgement and starts nothing.
 
 ## Synthesis boundary
 
@@ -38,7 +38,7 @@ What it returns per round:
 Two practical patterns:
 
 1. **Cheap polling.** Every response carries a weak `ETag`. Send it back via `If-None-Match` on the next poll — the server returns `304 Not Modified` on no change. The validator covers round-level state, per-model state, and (for non-terminal rounds) a 5-second wall-clock bucket so timing fields stay fresh.
-2. **Partial-round forensics.** When `wait_for_round` returns `proceed_with_partial_result` or `abandon`, start with `wait_for_round`'s `structuredContent.failed_models[]`, which already carries each failed model's `error_code` and how much text it produced. Reach for `/progress` when you need the live per-model state or deadlines while a round is still running. Chunk timestamps may be empty.
+2. **Partial-round forensics.** When `wait_for_round` returns `proceed_with_partial_result` or `abandon`, start with the model lines under the header of the `wait_for_round` result, which name each failed model and its error code. Reach for `/progress` when you need the live per-model state or deadlines while a round is still running. Chunk timestamps may be empty.
 
 Don't use `/progress` as a replacement for `wait_for_round` in the normal loop — `wait_for_round` is cheaper end-to-end because it consolidates the server-side polling. Reach for `/progress` when you specifically need the per-model state shape or the ETag-based no-change semantics.
 
