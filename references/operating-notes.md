@@ -38,7 +38,7 @@ What it returns per round:
 Two practical patterns:
 
 1. **Cheap polling.** Every response carries a weak `ETag`. Send it back via `If-None-Match` on the next poll — the server returns `304 Not Modified` on no change. The validator covers round-level state, per-model state, and (for non-terminal rounds) a 5-second wall-clock bucket so timing fields stay fresh.
-2. **Partial-round forensics.** When `wait_for_round` returns `proceed_with_partial_result` or `abandon`, start with the model lines under the header of the `wait_for_round` result, which name each failed model and its error code. Reach for `/progress` when you need the live per-model state or deadlines while a round is still running. Chunk timestamps may be empty.
+2. **Partial-round forensics.** When `wait_for_round` returns `proceed_with_partial_result` or `abandon`, start with the model lines under the header of the `wait_for_round` result, which name each failed model with its error code and a short sentence saying what happened, and each model that did not finish normally. Reach for `/progress` when you need the live per-model state or deadlines while a round is still running. Chunk timestamps may be empty.
 
 Don't use `/progress` as a replacement for `wait_for_round` in the normal loop — `wait_for_round` is cheaper end-to-end because it consolidates the server-side polling. Reach for `/progress` when you specifically need the per-model state shape or the ETag-based no-change semantics.
 

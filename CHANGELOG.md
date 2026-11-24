@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.1 — 2026-11-24
+
+Skill notes for mumo MCP server 1.6.0.
+
+- A failed model's line now shows its error code and a short sentence saying what happened, and a response that did not finish normally shows a short state. The skill's notes describe the new lines.
+- A compact re-read shows the model and how it ended, without token counts.
+- A result that begins `Error: internal_error` means mumo itself failed. The skill tells the agent to say so and not to change the arguments.
+- A round's web link appears once, in the header.
+
 ## 0.9.0 — 2026-11-21
 
 Coordinated client release rendered from the mumo-mcp 0.9.0 baseline. It goes with mumo MCP server 1.4.0.
